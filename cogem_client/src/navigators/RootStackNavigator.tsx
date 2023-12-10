@@ -2,7 +2,6 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import BottomTabNavigator from './BottomTabNavigator';
-import SplashScreen from '../screens/SplashScreen';
 import SignInScreen from '../screens/SignInScreen';
 
 import MissionDetailScreen from '../screens/MissionDetailScreen';
@@ -16,14 +15,7 @@ export default function RootStackNavigator() {
   const isSignedIn = true;
   const Stack = createNativeStackNavigator();
   return (
-    <Stack.Navigator initialRouteName={isSignedIn ? 'Main' : 'Splash'}>
-      <Stack.Screen
-        name="Splash"
-        component={SplashScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+    <Stack.Navigator initialRouteName={isSignedIn ? 'Main' : 'SignIn'}>
       {isSignedIn ? (
         <>
           <Stack.Screen
