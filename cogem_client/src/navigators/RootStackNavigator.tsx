@@ -14,8 +14,16 @@ import TaskTypeScreen from '../screens/TaskTypeScreen';
 export default function RootStackNavigator() {
   const isSignedIn = true;
   const Stack = createNativeStackNavigator();
+  const initialRouteName = isSignedIn ? 'Main' : 'SignIn';
   return (
-    <Stack.Navigator initialRouteName={isSignedIn ? 'Main' : 'SignIn'}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: '#2F2F36',
+        },
+      }}
+      initialRouteName={initialRouteName}>
       {isSignedIn ? (
         <>
           <Stack.Screen

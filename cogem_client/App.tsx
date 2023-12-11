@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import {StatusBar} from 'react-native';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import RootStackNavigator from './src/navigators/RootStackNavigator';
@@ -12,7 +13,8 @@ export default function App() {
   }, []);
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{flex: 1}}>
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={{flex: 1, backgroundColor: '#2F2F36'}}>
         <NavigationContainer>
           <RootStackNavigator />
         </NavigationContainer>
