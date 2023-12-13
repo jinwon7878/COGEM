@@ -14,7 +14,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="light-content" />
-      <SafeAreaView style={{flex: 1, backgroundColor: '#2F2F36'}}>
+      <SafeAreaView
+        style={{flex: 1, backgroundColor: '#2F2F36'}}
+        edges={['right', 'top', 'left']}>
         <NavigationContainer>
           <RootStackNavigator />
         </NavigationContainer>
