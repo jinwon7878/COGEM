@@ -1,14 +1,39 @@
-import {View, Text} from 'react-native';
-import React from 'react';
-import UncheckedButton from '../assets/svg/radio_unchecked.svg';
-import CheckedButton from '../assets/svg/radio_checked.svg';
+import React, {useState} from 'react';
+import {View} from 'react-native';
+import styled from '@emotion/native';
+import RadioButton from './RadioButton';
 
-export default function ClickButtons() {
+const ButtonsView = styled.View`
+  display: flex;
+  flex-direction: row;
+  width: 266px;
+  height: auto;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ClickButtons = ({selected, onSelect}) => {
+  const colors = [
+    '#7240FF',
+    '#865BFF',
+    '#AB8EFF',
+    '#9FC4D0',
+    '#63DAFF',
+    '#00C0FC',
+  ];
+
   return (
-    <View>
-      <Text>ClickButtons</Text>
-      <UncheckedButton width={32} height={32} stroke={'#7240FF'} />
-      <CheckedButton width={44} height={44} fill={'#63DAFF'} />
-    </View>
+    <ButtonsView>
+      {colors.map((color, index) => (
+        <RadioButton
+          key={index}
+          isSelected={selected === index}
+          onPress={() => onSelect(index)}
+          strokeColor={color}
+        />
+      ))}
+    </ButtonsView>
   );
-}
+};
+
+export default ClickButtons;
