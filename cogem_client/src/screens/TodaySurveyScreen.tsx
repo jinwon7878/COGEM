@@ -1,4 +1,4 @@
-import {Text, View} from 'react-native';
+import {Text, View, Dimensions} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import ClickButtons from '../components/ClickButtons';
 import CustomActivityIndicator from '../components/CustomActivityIndicator';
@@ -11,14 +11,14 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
   flex: 1;
-  justify-content: flex-start; // 컨텐츠를 위에서부터 시작
-  padding-top: 136px; // 상단 패딩을 적용
+  justify-content: flex-start;
 `;
 
 const QuestionContainer = styled.View`
-  margin-top: 136px;
-  width: 326px;
+  margin: 100px 0;
+  width: ${props => props.width}px;
   flex-grow: 1;
+  justify-content: center;
 `;
 
 const QuestionText = styled.Text`
@@ -26,18 +26,18 @@ const QuestionText = styled.Text`
   font-weight: 400;
   color: white;
   text-align: center;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
 `;
 
 const ButtonContainer = styled.View`
-  margin-bottom: 150px;
+  margin-bottom: ${props => props.marginBottom}px;
 `;
 
 const QuestionCounter = styled.Text`
   font-size: 16px;
   color: white;
   text-align: center;
-  margin-bottom: 150px;
+  margin-bottom: ${props => props.marginBottom}px;
 `;
 
 const TOTAL_QUESTIONS = 12;
@@ -51,6 +51,9 @@ const TodaySurveyScreen = () => {
   // props로 받아올 거임 나중에
   const [surveyQuestions, setSurveyQuestions] = useState([]);
   const [isSurveyFinish, setIsSurveyFinish] = useState(false);
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -81,7 +84,7 @@ const TodaySurveyScreen = () => {
             setSelectedButton(null); // 다음 문제를 위해 선택된 버튼 초기화
             setIsButtonDisabled(false); // 버튼 다시 활성화
           } else {
-            // 모든 문제가 완료되었을 때 로직 처리
+            // 설문 완료
             setIsSurveyFinish(true);
           }
         }, 1000);
@@ -98,22 +101,25 @@ const TodaySurveyScreen = () => {
     <Container>
       {!isSurveyFinish ? (
         <>
-          <QuestionContainer>
+          <QuestionContainer width={windowWidth * 0.85}>
             <QuestionText>{surveyQuestions[currentQuestion - 1]}</QuestionText>
           </QuestionContainer>
-          <ButtonContainer>
+          <ButtonContainer marginBottom={windowHeight * 0.2}>
             <ClickButtons
               selected={selectedButton}
               onSelect={handleSelectRadioButton}
               disabled={isButtonDisabled}
+              width={windowWidth*0.72}
             />
           </ButtonContainer>
-          <QuestionCounter>
+          <QuestionCounter marginBottom={windowHeight * 0.2}>
             {currentQuestion}/{TOTAL_QUESTIONS}
           </QuestionCounter>
         </>
       ) : (
-        <QuestionText>FINISH!!</QuestionText>
+        <QuestionContainer>
+          <QuestionText>FINISH!!</QuestionText>
+        </QuestionContainer>
       )}
     </Container>
   );
