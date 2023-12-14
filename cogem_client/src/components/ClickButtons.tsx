@@ -6,13 +6,13 @@ import RadioButton from './RadioButton';
 const ButtonsView = styled.View`
   display: flex;
   flex-direction: row;
-  width: 266px;
-  height: auto;
+  width: ${props => props.width}px;
+  height: 34px;
   justify-content: space-between;
   align-items: center;
 `;
 
-const ClickButtons = ({selected, onSelect}) => {
+const ClickButtons = ({selected, onSelect, disabled, width}) => {
   const colors = [
     '#7240FF',
     '#865BFF',
@@ -23,12 +23,13 @@ const ClickButtons = ({selected, onSelect}) => {
   ];
 
   return (
-    <ButtonsView>
+    <ButtonsView width={width}>
       {colors.map((color, index) => (
         <RadioButton
           key={index}
           isSelected={selected === index}
           onPress={() => onSelect(index)}
+          disabled={disabled}
           strokeColor={color}
         />
       ))}
