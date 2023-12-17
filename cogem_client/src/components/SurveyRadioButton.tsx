@@ -11,7 +11,7 @@ const TouchableButton = styled.TouchableOpacity`
   justify-contetn: center;
 `;
 
-const RadioButton = ({isSelected, onPress, disabled, strokeColor}) => {
+const SurveyRadioButton = ({isSelected, onPress, disabled, strokeColor}) => {
   const animatedStyles = useAnimatedStyle(() => {
     const buttonSize = isSelected ? 34 : disabled ? 24 : 26;
     return {
@@ -40,4 +40,4 @@ const RadioButton = ({isSelected, onPress, disabled, strokeColor}) => {
   );
 };
 
-export default RadioButton;
+export default SurveyRadioButton;

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import styled from '@emotion/native';
-import RadioButton from './RadioButton';
+import SurveyRadioButton from './SurveyRadioButton';
 
 const ButtonsView = styled.View`
   display: flex;
@@ -12,7 +12,7 @@ const ButtonsView = styled.View`
   align-items: center;
 `;
 
-const ClickButtons = ({selected, onSelect, disabled, width}) => {
+const SurveyClickButtons = ({selected, onSelect, disabled, width}) => {
   const colors = [
     '#7240FF',
     '#865BFF',
@@ -25,7 +25,7 @@ const ClickButtons = ({selected, onSelect, disabled, width}) => {
   return (
     <ButtonsView width={width}>
       {colors.map((color, index) => (
-        <RadioButton
+        <SurveyRadioButton
           key={index}
           isSelected={selected === index}
           onPress={() => onSelect(index)}
@@ -37,4 +37,4 @@ const ClickButtons = ({selected, onSelect, disabled, width}) => {
   );
 };
 
-export default ClickButtons;
+export default SurveyClickButtons;

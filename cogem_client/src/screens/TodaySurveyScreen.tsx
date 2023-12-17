@@ -1,6 +1,7 @@
 import {Text, View, Dimensions} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
-import ClickButtons from '../components/ClickButtons';
+import SurveyClickButtons from '../components/SurveyClickButtons';
+import SurveySkipButton from '../components/SurveySkipButton';
 import styled from '@emotion/native';
 import {
   getLastQuestionData,
@@ -31,18 +32,40 @@ const QuestionText = styled.Text`
   font-weight: 400;
   color: white;
   text-align: center;
-  // margin-bottom: 20px;
 `;
 
 const ButtonContainer = styled.View`
   margin-bottom: ${props => props.marginBottom}px;
 `;
 
-const QuestionCounter = styled.Text`
-  font-size: 16px;
-  color: ${props => (props.isCompleted ? 'blue' : 'white')};
-  text-align: center;
+const QuestionCounterContainer = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
   margin-bottom: ${props => props.marginBottom}px;
+`;
+
+const SkipContainer = styled.View`
+  height: 72px;
+  justify-content: space-between;
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-end;
+  margin-right: ${props => props.marginRight}px;
+  margin-bottom: ${props => props.marginBottom}px;
+`;
+
+const CurrentOrderText = styled.Text`
+  font-size: 30px;
+  color: ${props => (props.isCompleted ? '#FAAE1B' : 'white')};
+  text-align: center;
+  margin-right: 5px;
+`;
+
+const TotalQuestionsText = styled.Text`
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-bottom: 5px;
 `;
 
 const TOTAL_QUESTIONS = 12;
@@ -58,7 +81,7 @@ const TodaySurveyScreen = () => {
   const questionText = getQuestionText(questionId, surveyData);
 
   // UI update
-  const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedButton, setSelectedButton] = useState(null); // null -> 0~5, 'skip_next', 'skip_no'
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   // const [isLoading, setIsLoading] = useState(false);
@@ -93,23 +116,39 @@ const TodaySurveyScreen = () => {
   const handleAnswer = async selectedAnswer => {
     if (!isButtonDisabled) {
       // setIsLoading(true);
-      setSelectedButton(selectedAnswer);
+      setSelectedButton(selectedAnswer); // 0~5 or 'skip_next/no'
       setIsButtonDisabled(true); // 버튼 비활성화
       // 현재 질문 번호와 날짜: currentOrder, questionId
       const today = new Date().toISOString();
       console.log(today);
+      const skip_no = selectedAnswer === 'skip_no';
+      const skip_next = selectedAnswer === 'skip_next';
       try {
         // 답변 전송
         await axiosInstance.post('http://localhost:8080/answer', {
           question_id: questionId,
-          answer: selectedAnswer || null,
+          skip_next: skip_next,
+          skip_no: skip_no,
+          answer: skip_no || skip_next ? null : selectedAnswer,
           time_ans: today,
-          // user_id, time_spend, time_over, skip_no, skip_next, ...
+          // user_id, time_spend, time_over, ...
         });
+        console.log('req questionId: ', questionId);
+        console.log('req skip_next: ', skip_next);
+        console.log('req skip_no: ', skip_no);
+        console.log(
+          'req answer: ',
+          `${skip_no || skip_next ? null : selectedAnswer}`,
+        );
+        console.log('req time_ans: ', today);
         // 답변 성공 후 다음 질문으로 이동하기 위한 상태 업데이트
-        const nextQuestionId = questionId + 1;
+        const nextQuestionId = questionId + 1; // 로직 수정 필요 (카테고리 골고루)
         const nextQuestionNumber = currentOrder + 1;
-        await setLastQuestionData(nextQuestionId, today.slice(0, 10), nextQuestionNumber); // 다음 질문 ID로 업데이트
+        await setLastQuestionData(
+          nextQuestionId,
+          today.slice(0, 10), // XXXX-XX-XX
+          nextQuestionNumber,
+        ); // 다음 질문 ID로 업데이트
       } catch (error) {
         console.error(error);
       }
@@ -131,19 +170,36 @@ const TodaySurveyScreen = () => {
       <QuestionContainer width={windowWidth * 0.85}>
         <QuestionText>{questionText}</QuestionText>
       </QuestionContainer>
-      <ButtonContainer marginBottom={windowHeight * 0.2}>
-        <ClickButtons
+      <ButtonContainer marginBottom={windowHeight * 0.1}>
+        <SurveyClickButtons
           selected={selectedButton}
           onSelect={handleAnswer}
           disabled={isButtonDisabled}
           width={windowWidth * 0.72}
         />
       </ButtonContainer>
-      <QuestionCounter
-        marginBottom={windowHeight * 0.2}
-        isCompleted={currentOrder > TOTAL_QUESTIONS}>
-        {currentOrder}/{TOTAL_QUESTIONS}
-      </QuestionCounter>
+      <QuestionCounterContainer marginBottom={windowHeight * 0.08}>
+        <CurrentOrderText isCompleted={currentOrder > TOTAL_QUESTIONS}>
+          {currentOrder}
+        </CurrentOrderText>
+        <TotalQuestionsText>/{TOTAL_QUESTIONS}</TotalQuestionsText>
+      </QuestionCounterContainer>
+      <SkipContainer
+        marginBottom={windowHeight * 0.15}
+        marginRight={windowWidth * 0.05}>
+        <SurveySkipButton
+          onSelect={() => handleAnswer('skip_next')}
+          skipType={'skip_next'}
+          selected={selectedButton}
+          disabled={isButtonDisabled}
+        />
+        <SurveySkipButton
+          onSelect={() => handleAnswer('skip_no')}
+          skipType={'skip_no'}
+          selected={selectedButton}
+          disabled={isButtonDisabled}
+        />
+      </SkipContainer>
     </Container>
   );
 };
