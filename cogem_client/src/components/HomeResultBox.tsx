@@ -9,7 +9,7 @@ const EmotionComponentContainer = styled.View`
   background-color: #060419;
   align-items: center;
   width: 330px;
-  height: 450px;
+  height: 520px;
   margin-top: 20px;
   border-radius: 20px;
 `;
@@ -75,7 +75,9 @@ const HomeResultBox = () => {
         나는 수요일, 밤에 기분이 좋아요. 가끔은 혼자만의 시간을 가지는 것도
         당신을 충전시켜줄 수 있어요.
       </Subtitle>
+      <HomeResultBarchart />
     </EmotionComponentContainer>
+    
   );
 };
 
