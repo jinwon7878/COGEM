@@ -50,7 +50,7 @@ const ButtonText = styled.Text`
 const CognitionComponent = styled.View`
   background-color: #989898;
   width: 330px;
-  height: 450px;
+  height: 520px;
   margin-top: 20px;
   border-radius: 20px;
 `;
