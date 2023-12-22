@@ -1,5 +1,4 @@
 import React from 'react';
-import {View} from 'react-native';
 import styled from '@emotion/native';
 import {
   VictoryBar,
@@ -34,73 +33,75 @@ const ChartComponent = styled.View`
 
 const HomeResultBarchart = () => {
   return (
-    <View>
-      <ChartComponent>
-        <VictoryChart
-          domain={{y: [0, 6]}}
-          theme={VictoryTheme.material}
-          domainPadding={30}
+    <ChartComponent>
+      <VictoryChart
+        domain={{y: [0, 6]}}
+        theme={VictoryTheme.material}
+        domainPadding={30}>
+        <VictoryAxis
+          style={{
+            ticks: {stroke: 'none', size: 0},
+            grid: {stroke: 'none'},
+            axis: {stroke: 'rgba(255, 255, 255, 0.18)', strokeWidth: 1},
+            tickLabels: {fill: 'white'},
+          }}
+        />
+        <VictoryAxis
+          dependentAxis
+          tickFormat={x => `${x}`}
+          style={{
+            ticks: {stroke: 'none', size: 0},
+            grid: {
+              stroke: 'rgba(255, 255, 255, 0.18)',
+              strokeWidth: 1,
+              strokeDasharray: 'none',
+            },
+            axis: {stroke: 'none'},
+            tickLabels: {fill: 'none'},
+          }}
+        />
+        <VictoryBar
+          data={data2}
+          cornerRadius={{top: 18, bottom: 18}}
+          x="emotion"
+          y="value"
+          style={{
+            data: {
+              width: 36,
+              fill: '#201C44',
+            },
+          }}
+        />
+        <VictoryBar
+          data={data1}
+          cornerRadius={{top: 18, bottom: 18}}
+          x="emotion"
+          y="value"
           animate={{
-            duration: 1000,
-            onLoad: {duration: 500},
+            duration: 3000,
+            onLoad: {duration: 2500},
           }}
           style={{
-            parent: {border: '2px solid #ccc'},
-            data: {fill: '#c43a31'},
-          }}>
-          <VictoryAxis
-            style={{
-              ticks: {stroke: 'none', size: 0},
-              grid: {stroke: 'none'},
-              axis: {stroke: 'rgba(255, 255, 255, 0.18)', strokeWidth: 1},
-              tickLabels: {fill: 'white'},
-            }}
-          />
-          <VictoryAxis
-            dependentAxis
-            tickFormat={x => `${x}`}
-            style={{
-              ticks: {stroke: 'none', size: 0},
-              grid: {
-                stroke: 'rgba(255, 255, 255, 0.18)',
-                strokeWidth: 1,
-                strokeDasharray: 'none',
-              },
-              axis: {stroke: 'none'},
-              tickLabels: {fill: 'none'},
-            }}
-          />
-          <VictoryBar
-            data={data1}
-            cornerRadius={{top: 18, bottom: 18}}
-            x="emotion"
-            y="value"
-            style={{
-              data: {
-                width: 36,
-                fill: 'rgba(255, 184, 0, 0.5)',
-                strokeWidth: 1, // 막대의 테두리 두께
-                stroke: '#FFF',
-              },
-            }}
-          />
-          <VictoryBar
-            data={data2}
-            cornerRadius={{top: 18, bottom: 18}}
-            x="emotion"
-            y="value"
-            style={{
-              data: {
-                width: 36,
-                fill: 'rgba(112, 115, 255, 0.80)',
-                strokeWidth: 1, // 막대의 테두리 두께
-                stroke: '#FFF',
-              },
-            }}
-          />
-        </VictoryChart>
-      </ChartComponent>
-    </View>
+            data: {
+              width: 36,
+              fill: 'rgba(255, 184, 0, 1)',
+            },
+          }}
+        />
+        <VictoryBar
+          data={data2}
+          cornerRadius={{top: 18, bottom: 18}}
+          x="emotion"
+          y="value"
+          style={{
+            data: {
+              width: 36,
+              fill: 'rgba(32, 28, 68, 0.2)',
+            },
+          }}
+        />
+      </VictoryChart>
+    </ChartComponent>
   );
 };
 
