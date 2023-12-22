@@ -17,7 +17,6 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
   flex: 1;
-  justify-content: flex-start;
 `;
 
 const QuestionContainer = styled.View`
@@ -78,6 +77,7 @@ const getQuestionText = (questionId, surveyQuestions) => {
 const TodaySurveyScreen = () => {
   const [questionId, setQuestionId] = useState(null);
   const [currentOrder, setCurrentOrder] = useState(1);
+  const [showTime, setShowTime] = useState(null); // 문제 나타난 시간 (Date.now() -> ms 단위로 저장)
   const questionText = getQuestionText(questionId, surveyData);
 
   // UI update
@@ -94,16 +94,26 @@ const TodaySurveyScreen = () => {
     const initializeSurvey = async () => {
       // setIsLoading(true);
       let fetchedData = await getLastQuestionData();
-      const today = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+      const todayTime = new Date().toISOString(); // 'YYYY-MM-DD:mm:ss:sssZ
+      const todayDate = todayTime.slice(0, 10); // 'YYYY-MM-DD'
+      setShowTime(Date.now()); // ms 단위로 저장
 
       console.log('TodaySurvey Rendering! ', fetchedData);
-      console.log('today is ', today);
-      if (fetchedData.lastEnterDate !== today) {
-        await setLastQuestionData(fetchedData.lastQuestionId || 1, today, 1); // 최근 접속이 오늘이 아니면, 날짜 업데이트 + 현재 문제 1번째로 설정
+      console.log('todayTime(show) is ', todayTime);
+      console.log('todayDate(show) is ', todayDate);
+      if (fetchedData.lastEnterDate !== todayDate) {
+        await setLastQuestionData(
+          fetchedData.lastQuestionId || 1,
+          todayDate,
+          1,
+        ); // 최근 접속이 오늘이 아니면, 날짜 업데이트 + 현재 문제 1번째로 설정
         fetchedData = await getLastQuestionData();
       }
       // 최근 접속이 오늘이면 AsyncStorage 업데이트는 필요 X
-      console.log('update lastQuestionData! ', fetchedData);
+      console.log(
+        'update lastQuestionData (AsyncStorage & State)! ',
+        fetchedData,
+      );
       setQuestionId(fetchedData.lastQuestionId);
       setCurrentOrder(fetchedData.currentQuestion);
 
@@ -119,10 +129,13 @@ const TodaySurveyScreen = () => {
       setSelectedButton(selectedAnswer); // 0~5 or 'skip_next/no'
       setIsButtonDisabled(true); // 버튼 비활성화
       // 현재 질문 번호와 날짜: currentOrder, questionId
+      const currentTime = Date.now(); // ms 단위
       const today = new Date().toISOString();
-      console.log(today);
+      console.log('Today Click!! : ', today);
       const skip_no = selectedAnswer === 'skip_no';
       const skip_next = selectedAnswer === 'skip_next';
+      const time_spend = currentTime - showTime; // ms 단위
+      console.log('user spend time for solving!! (ms) : ', time_spend);
       try {
         // 답변 전송
         await axiosInstance.post('http://localhost:8080/answer', {
@@ -131,16 +144,18 @@ const TodaySurveyScreen = () => {
           skip_no: skip_no,
           answer: skip_no || skip_next ? null : selectedAnswer,
           time_ans: today,
-          // user_id, time_spend, time_over, ...
+          time_spend: time_spend, // ms 단위
+          // user_id 추가 필요
         });
-        console.log('req questionId: ', questionId);
-        console.log('req skip_next: ', skip_next);
-        console.log('req skip_no: ', skip_no);
+        console.log('[req] question_id: ', questionId);
+        console.log('[req] skip_next: ', skip_next);
+        console.log('[req] skip_no: ', skip_no);
         console.log(
-          'req answer: ',
+          '[req] answer: ',
           `${skip_no || skip_next ? null : selectedAnswer}`,
         );
-        console.log('req time_ans: ', today);
+        console.log('[req] time_ans: ', today);
+        console.log('[req] time_spend: ', time_spend);
         // 답변 성공 후 다음 질문으로 이동하기 위한 상태 업데이트
         const nextQuestionId = questionId + 1; // 로직 수정 필요 (카테고리 골고루)
         const nextQuestionNumber = currentOrder + 1;
@@ -182,7 +197,9 @@ const TodaySurveyScreen = () => {
         <CurrentOrderText isCompleted={currentOrder > TOTAL_QUESTIONS}>
           {currentOrder}
         </CurrentOrderText>
-        <TotalQuestionsText>/{TOTAL_QUESTIONS}</TotalQuestionsText>
+        {currentOrder <= TOTAL_QUESTIONS && (
+          <TotalQuestionsText>/{TOTAL_QUESTIONS}</TotalQuestionsText>
+        )}
       </QuestionCounterContainer>
       <SkipContainer
         marginBottom={windowHeight * 0.15}

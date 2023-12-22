@@ -18,9 +18,6 @@ export default function SurveySkipButton({
 }) {
   let skip_text;
   const isSelected = selected === skipType;
-  console.log('selected ', selected);
-  console.log('skipType ', selected);
-  console.log('isSelected ', isSelected);
   if (skipType === 'skip_next') {
     skip_text = '다음에 풀게요';
   }
