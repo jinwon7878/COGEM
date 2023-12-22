@@ -4,10 +4,12 @@ import styled from '@emotion/native';
 import HomeSunIcon from '../assets/svg/home_result_sun.svg';
 import HomeBarchartIcon from '../assets/svg/home_result_barchart.svg';
 import HomeResultBarchart from '../components/HomeResultBarchart';
+import HomeBottomColor from './HomeBottomColor';
 
 const EmotionComponentContainer = styled.View`
   background-color: #060419;
   align-items: center;
+  justify-content: space-between;
   width: 330px;
   height: 520px;
   margin-top: 20px;
@@ -76,8 +78,8 @@ const HomeResultBox = () => {
         당신을 충전시켜줄 수 있어요.
       </Subtitle>
       <HomeResultBarchart />
+      <HomeBottomColor />
     </EmotionComponentContainer>
-    
   );
 };
 
