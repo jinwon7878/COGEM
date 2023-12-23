@@ -10,80 +10,60 @@ import ResultDetailScreen from '../screens/ResultDetailScreen';
 import TodayTrainingScreen from '../screens/TodayTrainingScreen';
 import TaskCategoryScreen from '../screens/TaskCategoryScreen';
 import TaskTypeScreen from '../screens/TaskTypeScreen';
+import NbackTask from '../tasks/NbackTask';
+import NbackResult from '../tasks/NbackResult';
 
 export default function RootStackNavigator() {
   const isSignedIn = true;
   const Stack = createNativeStackNavigator();
   const initialRouteName = isSignedIn ? 'Main' : 'SignIn';
+  // 공용 screen options
+  const screenOptions = {
+    headerShown: false,
+    contentStyle: {backgroundColor: '#2F2F36'},
+  };
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: '#2F2F36',
-        },
-      }}
+      screenOptions={screenOptions}
       initialRouteName={initialRouteName}>
       {isSignedIn ? (
         <>
-          <Stack.Screen
-            name="Main"
-            component={BottomTabNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="MissionDetail"
-            component={MissionDetailScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="TotalResults"
-            component={TotalResultsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          <Stack.Screen name="Main" component={BottomTabNavigator} />
+          <Stack.Screen name="MissionDetail" component={MissionDetailScreen} />
+          <Stack.Screen name="TotalResults" component={TotalResultsScreen} />
           <Stack.Screen
             name="ResultDetail"
             component={ResultDetailScreen}
             options={{
-              headerShown: false,
+              headerShown: true,
             }}
           />
-          <Stack.Screen
-            name="TodayTraining"
-            component={TodayTrainingScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
+          <Stack.Screen name="TodayTraining" component={TodayTrainingScreen} />
           <Stack.Screen
             name="TaskCategory"
             component={TaskCategoryScreen}
             options={{
-              headerShown: false,
+              headerShown: true,
             }}
           />
           <Stack.Screen
             name="TaskType"
             component={TaskTypeScreen}
             options={{
-              headerShown: false,
+              headerShown: true,
             }}
           />
+          <Stack.Screen
+            name="NbackTask"
+            component={NbackTask}
+            options={{
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen name="NbackResult" component={NbackResult} />
         </>
       ) : (
-        <Stack.Screen
-          name="SignIn"
-          component={SignInScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
+        <Stack.Screen name="SignIn" component={SignInScreen} />
       )}
     </Stack.Navigator>
   );
