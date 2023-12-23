@@ -78,13 +78,31 @@ const HomeResultBarchart = () => {
           x="emotion"
           y="value"
           animate={{
-            duration: 3000,
-            onLoad: {duration: 2500},
+            duration: 1000,
+            onLoad: {duration: 3000},
+            easing: "bounce"
           }}
           style={{
             data: {
               width: 36,
-              fill: 'rgba(255, 184, 0, 1)',
+              fill: ({datum}) => {
+                switch (datum.emotion) {
+                  case '기쁨':
+                    return 'rgba(250, 174, 27, 1)';
+                  case '슬픔':
+                    return 'rgba(250, 131, 21, 1)';
+                  case '분노':
+                    return 'rgba(99, 102, 241, 1)';
+                  case '공포':
+                    return 'rgba(59, 130, 246, 1)';
+                  case '혐오':
+                    return 'rgba(20, 184, 166, 1)';
+                  case '놀람':
+                    return 'rgba(93, 180, 112, 1)';
+                  default:
+                    return 'gray'; // 기본 색상
+                }
+              },
             },
           }}
         />
