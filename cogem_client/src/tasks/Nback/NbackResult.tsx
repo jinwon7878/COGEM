@@ -46,6 +46,7 @@ const ButtonText = styled.Text`
 
 export default function NbackResult({navigation, route}) {
   const {accuracy, nLevel, userResponse} = route.params;
+  console.log('accuracy is ', accuracy);
   console.log('userResponse: ', userResponse);
   const roundedAccuracy = Math.round(accuracy * 10) / 10;
   return (

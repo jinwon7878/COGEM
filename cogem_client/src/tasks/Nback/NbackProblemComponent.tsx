@@ -224,7 +224,7 @@ const NbackProblemComponent = ({
           {currentPosition > notCount - 1
             ? `${currentPosition - (notCount - 1)}/${problemLength}`
             : currentPosition > 2
-            ? `${nLevel}번째 (곧 시작됩니다!)`
+            ? `${currentPosition - 2}번째 (곧 시작됩니다!)`
             : '준비'}
         </PositionText>
         {currentPosition > 2 && (

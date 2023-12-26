@@ -8,6 +8,7 @@ import {
   setLastQuestionData,
 } from '../utils/LastQuestionData';
 import surveyData from '../assets/surveyData.json';
+import {toKoreaISOString} from '../utils/KoreaTime';
 import axiosInstance from '../axiosInstance';
 
 // import axios from 'axios';
@@ -94,9 +95,9 @@ const TodaySurveyScreen = () => {
     const initializeSurvey = async () => {
       // setIsLoading(true);
       let fetchedData = await getLastQuestionData();
-      const todayTime = new Date().toISOString(); // 'YYYY-MM-DD:mm:ss:sssZ
+      const todayTime = toKoreaISOString(new Date()); // 'YYYY-MM-DD:mm:ss:sss+09:000
       const todayDate = todayTime.slice(0, 10); // 'YYYY-MM-DD'
-      setShowTime(Date.now()); // ms 단위로 저장
+      setShowTime(Date.now()); // ms 단위로 저장, reaction time 계산용
 
       console.log('TodaySurvey Rendering! ', fetchedData);
       console.log('todayTime(show) is ', todayTime);
@@ -129,8 +130,8 @@ const TodaySurveyScreen = () => {
       setSelectedButton(selectedAnswer); // 0~5 or 'skip_next/no'
       setIsButtonDisabled(true); // 버튼 비활성화
       // 현재 질문 번호와 날짜: currentOrder, questionId
-      const currentTime = Date.now(); // ms 단위
-      const today = new Date().toISOString();
+      const currentTime = Date.now(); // ms 단위 (reaction time 계산용)
+      const today = toKoreaISOString(new Date()); // 'YYYY-MM-DD:mm:ss:sss+09:000 (한국 날짜 및 시간)
       console.log('Today Click!! : ', today);
       const skip_no = selectedAnswer === 'skip_no';
       const skip_next = selectedAnswer === 'skip_next';
