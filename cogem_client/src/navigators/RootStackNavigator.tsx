@@ -10,8 +10,8 @@ import ResultDetailScreen from '../screens/ResultDetailScreen';
 import TodayTrainingScreen from '../screens/TodayTrainingScreen';
 import TaskCategoryScreen from '../screens/TaskCategoryScreen';
 import TaskTypeScreen from '../screens/TaskTypeScreen';
-import NbackTask from '../tasks/NbackTask';
-import NbackResult from '../tasks/NbackResult';
+import NbackScreen from '../tasks/Nback/NbackScreen';
+import NbackResult from '../tasks/Nback/NbackResult';
 
 export default function RootStackNavigator() {
   const isSignedIn = true;
@@ -21,6 +21,12 @@ export default function RootStackNavigator() {
   const screenOptions = {
     headerShown: false,
     contentStyle: {backgroundColor: '#2F2F36'},
+    headerStyle: {
+      backgroundColor: '#2F2F36',
+    },
+    headerTintColor: '#FFF', // 뒤로가기 버튼 색상
+    headerBackTitleVisible: false, // 뒤로가기 버튼 옆의 텍스트 숨기기
+    title: '', // 화면 이름 숨기기
   };
   return (
     <Stack.Navigator
@@ -55,7 +61,7 @@ export default function RootStackNavigator() {
           />
           <Stack.Screen
             name="NbackTask"
-            component={NbackTask}
+            component={NbackScreen}
             options={{
               headerShown: true,
             }}

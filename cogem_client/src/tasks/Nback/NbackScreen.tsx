@@ -1,0 +1,74 @@
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+import {generateSequence, getColorForLevel} from './NbackService';
+import NbackProblemComponent from './NbackProblemComponent';
+
+const NBackScreen = ({route, navigation}) => {
+  const {nLevel} = route.params;
+  const [currentColor, setCurrentColor] = useState('');
+  const [sequence, setSequence] = useState([]);
+  const [currentPosition, setCurrentPosition] = useState(0); // 현재 시퀀스 위치
+  const [userResponse, setUserResponse] = useState([]); // 사용자 반응(결과) 배열
+  const [isAnswered, setIsAnswered] = useState(false); // 사용자가 응답된 상태인지 확인
+  const [answerText, setAnswerText] = useState(''); // 사용자가 정답인지 아닌지 알림
+
+  useEffect(() => {
+    const newSequence = generateSequence(20); // 64개 수정 필요
+    setSequence(newSequence);
+    setCurrentColor(getColorForLevel(nLevel)); // 색상 설정과 함께 rerendering (newSequence 적용)
+    // nLevel update되었을 때, 상태 초기화
+    setCurrentPosition(0);
+    setUserResponse([]);
+    setIsAnswered(false);
+    setAnswerText('');
+  }, [nLevel]);
+
+  const handleUserTimeOver = (position, startTime) => {
+    // nLevel 번 째 이상부터 체크
+    if (position > 2 + nLevel) {
+      const endTime = Date.now();
+      const reactionTime = endTime - startTime; // over 시간 계산
+      setUserResponse([
+        ...userResponse,
+        {
+          char: sequence[position],
+          response: null,
+          reactionTime: reactionTime,
+          correct: false,
+          timeover: true,
+        },
+      ]);
+      console.log(`[${position}] timeover!! spend-time:`, reactionTime);
+    }
+  };
+
+  const endTask = () => {
+    // Task 끝났을 때 필요한 처리 (정확도 계산 + 결과 화면 네비게이션)
+    const correctResponses = userResponse.filter(r => r.correct).length;
+    navigation.navigate('NbackResult', {
+      accuracy: (correctResponses / sequence.length) * 100,
+      nLevel: nLevel,
+      userResponse: userResponse,
+    });
+  };
+
+  return (
+    <NbackProblemComponent
+      nLevel={nLevel}
+      sequence={sequence}
+      currentPosition={currentPosition}
+      setCurrentPosition={setCurrentPosition}
+      color={currentColor}
+      userResponse={userResponse}
+      setUserResponse={setUserResponse}
+      onUserTimeOver={handleUserTimeOver}
+      isAnswered={currentPosition < 3 + nLevel ? true : isAnswered} // nLever번째 전까진 버튼 클릭 X
+      setIsAnswered={setIsAnswered}
+      answerText={answerText}
+      setAnswerText={setAnswerText}
+      endTask={endTask}
+    />
+  );
+};
+
+export default NBackScreen;

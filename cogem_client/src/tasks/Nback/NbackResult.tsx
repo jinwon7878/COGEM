@@ -45,11 +45,13 @@ const ButtonText = styled.Text`
 `;
 
 export default function NbackResult({navigation, route}) {
-  const {accuracy, nLevel} = route.params;
+  const {accuracy, nLevel, userResponse} = route.params;
+  console.log('userResponse: ', userResponse);
+  const roundedAccuracy = Math.round(accuracy * 10) / 10;
   return (
     <Container>
       <NbackText>{nLevel} - back</NbackText>
-      <AccuracyText>당신의 정확도는 {accuracy} % 입니다!</AccuracyText>
+      <AccuracyText>당신의 정확도는 {roundedAccuracy} % 입니다!</AccuracyText>
       {accuracy < 50 && (
         <SubText>
           정확도가 50% 이상이어야, 다음 n-back에 도전할 수 있어요!
