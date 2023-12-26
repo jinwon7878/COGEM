@@ -31,8 +31,17 @@ const ContentContainer = styled.View({
   width: '100%',
 });
 
+const PauseDescription = styled.Text({
+  fontSize: 16,
+  lineHeight: 20,
+  fontWeight: '500',
+  color: 'white',
+  marginBottom: 30,
+});
+
 const PositionText = styled.Text({
   fontSize: 20,
+  lineHeight: 20,
   fontWeight: '500',
   color: 'white',
   marginBottom: 30,
@@ -64,6 +73,12 @@ const CharContainer = styled.View(props => ({
   borderColor: '#E0E0E0',
 }));
 
+const PauseText = styled.Text({
+  fontSize: 32,
+  fontWeight: '400',
+  color: 'black',
+});
+
 const CharText = styled.Text(props => ({
   fontSize: 58,
   fontWeight: 'bold',
@@ -73,7 +88,7 @@ const CharText = styled.Text(props => ({
 const AnswerText = styled.Text({
   height: 30,
   fontSize: 24,
-  fontWeight: '500',
+  fontWeight: '700',
   color: '#f18d2e',
   marginVertical: 15,
 });
@@ -108,6 +123,8 @@ const NbackProblemComponent = ({
   problemLength,
   nLevel,
   sequence,
+  isPaused,
+  setIsPaused,
   currentPosition,
   setCurrentPosition,
   color,
@@ -141,7 +158,16 @@ const NbackProblemComponent = ({
   const timerRef = useRef(); // 타이머 참조를 저장
 
   useEffect(() => {
-    if (currentPosition < 3) {
+    if (isPaused) {
+      // 만약 일시정지 상태라면
+      timerRef.current = setTimeout(async () => {
+        setIsPaused(false); // 일시정지 해제
+        setIsAnswered(false); // 버튼 클릭 가능하게
+        setAnswerText(''); // 정답 텍스트 초기화
+        setCurrentPosition(currentPosition + 1); // 문제 번호 +1
+      }, 1000);
+      return () => clearTimeout(timerRef);
+    } else if (currentPosition < 3) {
       timerRef.current = setTimeout(() => {
         setCurrentPosition(currentPosition + 1);
       }, 1000);
@@ -154,8 +180,7 @@ const NbackProblemComponent = ({
       }); // 2초 동안 가득 차게 애니메이션 적용
       timerRef.current = setTimeout(() => {
         onUserTimeOver(currentPosition, startTime);
-        // 문제 번호 +1 & 상태 초기화
-        setCurrentPosition(currentPosition + 1);
+        setIsPaused(true); // 일시 정지 상태로 전환
       }, 2000);
       return () => {
         // 컴포넌트가 언마운트되거나 currentPosition이 변경될 때 타이머 정리
@@ -166,7 +191,7 @@ const NbackProblemComponent = ({
     } else if (sequence.length !== 0 && currentPosition === sequence.length) {
       endTask();
     }
-  }, [currentPosition, sequence]);
+  }, [currentPosition, sequence, isPaused]);
 
   const handleUserResponse = (position, response) => {
     const endTime = Date.now();
@@ -206,10 +231,7 @@ const NbackProblemComponent = ({
     }
     // 2초 후 타이머 재설정 (기존의 timer와 다른점: timeover 함수 X)
     timerRef.current = setTimeout(() => {
-      // 문제 번호 +1 & 상태 초기화
-      setCurrentPosition(currentPosition + 1);
-      setIsAnswered(false);
-      setAnswerText('');
+      setIsPaused(true); // 일시 정지 상태로
     }, 2000 - (Date.now() - startTime)); // 사용자 응답 시간 고려
 
     setIsAnswered(true); // 응답 상태 변환
@@ -220,20 +242,28 @@ const NbackProblemComponent = ({
     <Container>
       <Title>{nLevel}-back</Title>
       <ContentContainer>
-        <PositionText>
-          {currentPosition > notCount - 1
-            ? `${currentPosition - (notCount - 1)}/${problemLength}`
-            : currentPosition > 2
-            ? `${currentPosition - 2}번째 (곧 시작됩니다!)`
-            : '준비'}
-        </PositionText>
+        {isPaused ? (
+          <PauseDescription>잠깐 대기 (1s)</PauseDescription>
+        ) : (
+          <PositionText>
+            {currentPosition > notCount - 1
+              ? `${currentPosition - (notCount - 1)}/${problemLength}`
+              : currentPosition > 2
+              ? `${currentPosition - 2}번째 (곧 시작됩니다!)`
+              : '준비'}
+          </PositionText>
+        )}
         {currentPosition > 2 && (
           <ProgressBarContainer width={windowWidth * 0.8}>
             <ProgressBar style={progressBarStyle} color={color} />
           </ProgressBarContainer>
         )}
         <CharContainer width={windowWidth * 0.8} height={windowHeight * 0.25}>
-          <CharText color={color}>{currentChar}</CharText>
+          {isPaused ? (
+            <PauseText>+</PauseText>
+          ) : (
+            <CharText color={color}>{currentChar}</CharText>
+          )}
         </CharContainer>
         <AnswerText>{answerText}</AnswerText>
         <ResponseContainer>

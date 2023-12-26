@@ -11,6 +11,7 @@ const NBackScreen = ({route, navigation}) => {
   const [userResponse, setUserResponse] = useState([]); // 사용자 반응(결과) 배열
   const [isAnswered, setIsAnswered] = useState(false); // 사용자가 응답된 상태인지 확인
   const [answerText, setAnswerText] = useState(''); // 사용자가 정답인지 아닌지 알림
+  const [isPaused, setIsPaused] = useState(false); // 일시정지(문제 사이) 상태인지 확인
 
   const problemLength = 20; // 사용자가 푸는 문제 개수 (64로 수정 필요)
   const notCount = 3 + nLevel; // 사용자가 응답할 수 없는 sequence의 item 수
@@ -47,6 +48,7 @@ const NBackScreen = ({route, navigation}) => {
         `[${position - (notCount - 1)}] timeover!! spend-time:`,
         reactionTime,
       );
+      setAnswerText('시간 초과입니다');
     }
   };
 
@@ -65,13 +67,15 @@ const NBackScreen = ({route, navigation}) => {
       problemLength={problemLength}
       nLevel={nLevel}
       sequence={sequence}
+      isPaused={isPaused}
+      setIsPaused={setIsPaused}
       currentPosition={currentPosition}
       setCurrentPosition={setCurrentPosition}
       color={currentColor}
       userResponse={userResponse}
       setUserResponse={setUserResponse}
       onUserTimeOver={handleUserTimeOver}
-      isAnswered={currentPosition < 3 + nLevel ? true : isAnswered} // nLever번째 전까진 버튼 클릭 X
+      isAnswered={currentPosition < notCount || isPaused ? true : isAnswered} // nLever번째 전까진 버튼 클릭 X
       setIsAnswered={setIsAnswered}
       answerText={answerText}
       setAnswerText={setAnswerText}

@@ -10,6 +10,7 @@ import ResultDetailScreen from '../screens/ResultDetailScreen';
 import TodayTrainingScreen from '../screens/TodayTrainingScreen';
 import TaskCategoryScreen from '../screens/TaskCategoryScreen';
 import TaskTypeScreen from '../screens/TaskTypeScreen';
+import NbackDescription from '../tasks/Nback/NbackDescription';
 import NbackScreen from '../tasks/Nback/NbackScreen';
 import NbackResult from '../tasks/Nback/NbackResult';
 
@@ -26,6 +27,7 @@ export default function RootStackNavigator() {
     },
     headerTintColor: '#FFF', // 뒤로가기 버튼 색상
     headerBackTitleVisible: false, // 뒤로가기 버튼 옆의 텍스트 숨기기
+    // headerBackTitle: '홈으로',
     title: '', // 화면 이름 숨기기
   };
   return (
@@ -55,6 +57,13 @@ export default function RootStackNavigator() {
           <Stack.Screen
             name="TaskType"
             component={TaskTypeScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
+          <Stack.Screen
+            name="NbackDescription"
+            component={NbackDescription}
             options={{
               headerShown: true,
             }}

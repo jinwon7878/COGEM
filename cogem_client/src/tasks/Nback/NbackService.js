@@ -1,11 +1,14 @@
 // 길이에 맞는 무작위 알파벳 배열 생성 (+ 3초 카운트)
 const generateSequence = (length, level) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
   // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   // const characters = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
   // const characters = 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ'.split('');
   // const characters = '0123456789'.split('');
+
   let newSequence = [3, 2, 1]; // index 0, 1, 2는 문제 풀기 전 카운트 역할
+  const countdownLength = 3; // 카운트다운 부분의 길이
 
   // 랜덤 알파벳 sequence 생성
   for (let i = 0; i < length + level; i++) {
@@ -18,7 +21,9 @@ const generateSequence = (length, level) => {
   let usedIndices = new Set(); // 이미 사용된 인덱스 추적
 
   while (answerPairs > 0) {
-    let index = Math.floor(Math.random() * (length - level)) + level;
+    // 실제 사용자가 클릭하는 부분에서만 pairs 생성
+    let index =
+      Math.floor(Math.random() * (length - level)) + level + countdownLength;
     if (!usedIndices.has(index)) {
       newSequence[index] = newSequence[index - level];
       usedIndices.add(index);

@@ -11,7 +11,7 @@ const RowContainer = styled.View`
 
 export default function CognitiveTrainingScreen({navigation}) {
   const handlePressTodayMission = () => {
-    navigation.navigate('NbackTask', {nLevel: 1});
+    navigation.navigate('NbackDescription', {nLevel: 1});
   };
   return (
     <ScrollView contentContainerStyle={{alignItems: 'center'}}>

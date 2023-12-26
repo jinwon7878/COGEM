@@ -64,7 +64,7 @@ export default function NbackResult({navigation, route}) {
       {nLevel < 5 && accuracy >= 50 && (
         <StyledButton
           onPress={() =>
-            navigation.navigate('NbackTask', {nLevel: nLevel + 1})
+            navigation.navigate('NbackDescription', {nLevel: nLevel + 1})
           }>
           <ButtonText>다음 {nLevel + 1}-back 에 도전할래요!</ButtonText>
         </StyledButton>
