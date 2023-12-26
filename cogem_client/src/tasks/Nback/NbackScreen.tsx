@@ -12,8 +12,12 @@ const NBackScreen = ({route, navigation}) => {
   const [isAnswered, setIsAnswered] = useState(false); // 사용자가 응답된 상태인지 확인
   const [answerText, setAnswerText] = useState(''); // 사용자가 정답인지 아닌지 알림
 
+  const problemLength = 20; // 사용자가 푸는 문제 개수 (64로 수정 필요)
+  const notCount = 3 + nLevel; // 사용자가 응답할 수 없는 sequence의 item 수
+  // position과 같은 index계산할 땐 -1 필요
+
   useEffect(() => {
-    const newSequence = generateSequence(20); // 64개 수정 필요
+    const newSequence = generateSequence(problemLength, nLevel); // 문제 알파벳 sequence 생성(카운트 포함)
     setSequence(newSequence);
     setCurrentColor(getColorForLevel(nLevel)); // 색상 설정과 함께 rerendering (newSequence 적용)
     // nLevel update되었을 때, 상태 초기화
@@ -32,13 +36,17 @@ const NBackScreen = ({route, navigation}) => {
         ...userResponse,
         {
           char: sequence[position],
+          position: position - (notCount - 1),
           response: null,
           reactionTime: reactionTime,
           correct: false,
           timeover: true,
         },
       ]);
-      console.log(`[${position}] timeover!! spend-time:`, reactionTime);
+      console.log(
+        `[${position - (notCount - 1)}] timeover!! spend-time:`,
+        reactionTime,
+      );
     }
   };
 
@@ -54,6 +62,7 @@ const NBackScreen = ({route, navigation}) => {
 
   return (
     <NbackProblemComponent
+      problemLength={problemLength}
       nLevel={nLevel}
       sequence={sequence}
       currentPosition={currentPosition}

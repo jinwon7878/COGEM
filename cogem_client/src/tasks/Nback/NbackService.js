@@ -1,8 +1,8 @@
 // 길이에 맞는 무작위 알파벳 배열 생성 (+ 3초 카운트)
-const generateSequence = length => {
+const generateSequence = (length, level) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   let newSequence = [3, 2, 1]; // index 0, 1, 2는 문제 풀기 전 카운트 역할
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length + level; i++) {
     const char = characters[Math.floor(Math.random() * characters.length)];
     newSequence.push(char);
   }

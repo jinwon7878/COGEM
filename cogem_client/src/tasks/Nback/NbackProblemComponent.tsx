@@ -67,7 +67,7 @@ const CharContainer = styled.View(props => ({
 const CharText = styled.Text(props => ({
   fontSize: 58,
   fontWeight: 'bold',
-  color: props.color,
+  color: props.color || 'black',
 }));
 
 const AnswerText = styled.Text({
@@ -105,6 +105,7 @@ const ButtonText = styled.Text({
 });
 
 const NbackProblemComponent = ({
+  problemLength,
   nLevel,
   sequence,
   currentPosition,
@@ -121,6 +122,8 @@ const NbackProblemComponent = ({
 }) => {
   const currentChar = sequence[currentPosition]; // 보여줄 알파벳
   const startTime = Date.now(); // 문제 보여지는 시각 (ms단위)
+  const notCount = 3 + nLevel; // 사용자가 응답할 수 없는 sequence의 item 수
+  // position과 같은 index계산할 땐 -1 필요
 
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
@@ -179,7 +182,7 @@ const NbackProblemComponent = ({
       ...userResponse,
       {
         char: sequence[currentPosition],
-        position: position - (2 + nLevel),
+        position: position - (notCount - 1),
         response,
         reactionTime,
         correct,
@@ -187,9 +190,15 @@ const NbackProblemComponent = ({
       },
     ]);
     if (correct) {
-      console.log(`[${position}] CORRECT!! reactionTime: `, reactionTime);
+      console.log(
+        `[${position - (notCount - 1)}] CORRECT!! reactionTime: `,
+        reactionTime,
+      );
     } else {
-      console.log(`[${position}] INCORRECT!! reactionTime: `, reactionTime);
+      console.log(
+        `[${position - (notCount - 1)}] INCORRECT!! reactionTime: `,
+        reactionTime,
+      );
     }
     // 기존 timer 있으면 취소
     if (timerRef.current) {
@@ -212,7 +221,11 @@ const NbackProblemComponent = ({
       <Title>{nLevel}-back</Title>
       <ContentContainer>
         <PositionText>
-          {currentPosition > 2 ? `${currentPosition - 2}/20` : '준비'}
+          {currentPosition > notCount - 1
+            ? `${currentPosition - (notCount - 1)}/${problemLength}`
+            : currentPosition > 2
+            ? `${nLevel}번째 (곧 시작됩니다!)`
+            : '준비'}
         </PositionText>
         {currentPosition > 2 && (
           <ProgressBarContainer width={windowWidth * 0.8}>
