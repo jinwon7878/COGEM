@@ -17,17 +17,44 @@ const generateSequence = (length, level) => {
   }
 
   // 정답 쌍 생성
-  let answerPairs = length / 4;
-  let usedIndices = new Set(); // 이미 사용된 인덱스 추적
-
+  let answerPairs = Math.floor(length / 4); // answer 비율 (최소 보장 비율)
+  let usedIndices = new Set(); // 정답과 미끼 인덱스 추적
+  let answerOriginIndices = new Set(); // 정답 쌍(index - level) 인덱스만 추적
   while (answerPairs > 0) {
     // 실제 사용자가 클릭하는 부분에서만 pairs 생성
     let index =
       Math.floor(Math.random() * (length - level)) + level + countdownLength;
-    if (!usedIndices.has(index)) {
-      newSequence[index] = newSequence[index - level];
+    // (length - level) : 사용자가 선택할 수 있는 개수
+    if (
+      !usedIndices.has(index) && // 기존의 정답 index 무효화 방지
+      !answerOriginIndices.has(index) // 기존의 정답 쌍 index 변경 방지
+    ) {
+      newSequence[index] = newSequence[index - level]; // sequence[index]를 변경
       usedIndices.add(index);
+      answerOriginIndices.add(index - level); // 정답 쌍 인덱스 추가
       answerPairs--;
+      console.log('answer index is ', index);
+    }
+  }
+
+  // 미끼 쌍 생성
+  let lurePairs = Math.floor(length / 6); // lure 비율 (겹칠 수 있기에, 대략적인 비율)
+  while (lurePairs > 0) {
+    if (level === 1) {
+      break;
+    }
+    let index =
+      Math.floor(Math.random() * (length - level)) + level + countdownLength;
+    let lureLevel = Math.floor(Math.random() * (level - 1)) + 1; // 1과 level-1 사이의 미끼 레벨 선택
+    if (
+      !usedIndices.has(index) && // 기존의 정답 index 무효화 방지
+      !answerOriginIndices.has(index) && // 기존의 정답 쌍 index 변경 방지
+      index - lureLevel >= countdownLength // disable 구역 침범 방지
+    ) {
+      newSequence[index] = newSequence[index - lureLevel];
+      usedIndices.add(index);
+      lurePairs--;
+      console.log('lure index is ', index);
     }
   }
 
@@ -47,6 +74,11 @@ const isResponseCorrect = (response, position, level, seq) => {
     return false;
   } // 아직 n-back 조건을 만족하지 않는 경우
   return response === (seq[position - level] === seq[position]);
+};
+
+// 문제 사이 일시정지 보여주는 함수
+const pauseInterval = (time, set) => {
+  const timer = setTimeout(() => {}, time);
 };
 
 // userResponse state 처리 필요
