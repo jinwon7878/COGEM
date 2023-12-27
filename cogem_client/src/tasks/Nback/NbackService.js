@@ -1,11 +1,37 @@
 // 길이에 맞는 무작위 알파벳 배열 생성 (+ 3초 카운트)
-const generateSequence = (length, level) => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
-  // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  // const characters = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
-  // const characters = 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ'.split('');
-  // const characters = '0123456789'.split('');
+const generateSequence = (level, length, sType) => {
+  let characters;
+  switch (sType) {
+    case 'E-a':
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      break;
+    case 'K-a':
+      characters = '가나다라마바사아자차카타파하'.split('');
+      break;
+    case 'K-c':
+      characters = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
+      break;
+    case 'K-v':
+      characters = 'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ'.split('');
+      break;
+    case 'N':
+      characters = '0123456789'.split('');
+      break;
+    case 'E-a:K-a':
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ가나다라마바사아자차카타파하'.split('');
+      break;
+    case 'E-a:K-c':
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'.split('');
+      break;
+    case 'E-a:K-v':
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ'.split('');
+      break;
+    case 'E-a:N':
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+      break;
+    default:
+      characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  }
 
   let newSequence = [3, 2, 1]; // index 0, 1, 2는 문제 풀기 전 카운트 역할
   const countdownLength = 3; // 카운트다운 부분의 길이

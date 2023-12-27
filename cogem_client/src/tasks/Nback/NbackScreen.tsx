@@ -4,7 +4,7 @@ import {generateSequence, getColorForLevel} from './NbackService';
 import NbackProblemComponent from './NbackProblemComponent';
 
 const NBackScreen = ({route, navigation}) => {
-  const {nLevel} = route.params;
+  const {nLevel, sequenceLength, sequenceType} = route.params;
   const [currentColor, setCurrentColor] = useState('');
   const [sequence, setSequence] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(0); // 현재 시퀀스 위치
@@ -13,12 +13,11 @@ const NBackScreen = ({route, navigation}) => {
   const [answerText, setAnswerText] = useState(''); // 사용자가 정답인지 아닌지 알림
   const [isPaused, setIsPaused] = useState(false); // 일시정지(문제 사이) 상태인지 확인
 
-  const problemLength = 20; // 사용자가 푸는 문제 개수 (64로 수정 필요)
   const notCount = 3 + nLevel; // 사용자가 응답할 수 없는 sequence의 item 수
-  // position과 같은 index계산할 땐 -1 필요
+  // position과 같은 index 계산할 땐 -1 필요
 
   useEffect(() => {
-    const newSequence = generateSequence(problemLength, nLevel); // 문제 알파벳 sequence 생성(카운트 포함)
+    const newSequence = generateSequence(nLevel, sequenceLength, sequenceType); // 문제 알파벳 sequence 생성(카운트 포함)
     setSequence(newSequence);
     setCurrentColor(getColorForLevel(nLevel)); // 색상 설정과 함께 rerendering (newSequence 적용)
     // nLevel update되었을 때, 상태 초기화
@@ -58,13 +57,15 @@ const NBackScreen = ({route, navigation}) => {
     navigation.navigate('NbackResult', {
       accuracy: (correctResponses / sequence.length) * 100,
       nLevel: nLevel,
+      sequenceLength: sequenceLength,
+      sequenceType: sequenceType,
       userResponse: userResponse,
     });
   };
 
   return (
     <NbackProblemComponent
-      problemLength={problemLength}
+      sequenceLength={sequenceLength}
       nLevel={nLevel}
       sequence={sequence}
       isPaused={isPaused}

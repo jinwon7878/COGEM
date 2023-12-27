@@ -120,7 +120,7 @@ const ButtonText = styled.Text({
 });
 
 const NbackProblemComponent = ({
-  problemLength,
+  sequenceLength,
   nLevel,
   sequence,
   isPaused,
@@ -247,7 +247,7 @@ const NbackProblemComponent = ({
         ) : (
           <PositionText>
             {currentPosition > notCount - 1
-              ? `${currentPosition - (notCount - 1)}/${problemLength}`
+              ? `${currentPosition - (notCount - 1)}/${sequenceLength}`
               : currentPosition > 2
               ? `${currentPosition - 2}번째 (곧 시작됩니다!)`
               : '준비'}

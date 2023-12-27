@@ -11,7 +11,12 @@ const RowContainer = styled.View`
 
 export default function CognitiveTrainingScreen({navigation}) {
   const handlePressTodayMission = () => {
-    navigation.navigate('NbackDescription', {nLevel: 1});
+    navigation.navigate('NbackDescription', {
+      nLevel: 1,
+      sequenceLength: 20,
+      sequenceType: 'E-a:K-c',
+    });
+    // 여기서 초기 level, 문제 개수 등 조정 가능
   };
   return (
     <ScrollView contentContainerStyle={{alignItems: 'center'}}>
