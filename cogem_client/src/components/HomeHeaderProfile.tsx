@@ -1,18 +1,37 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text} from 'react-native';
 import styled from '@emotion/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import HomeProfileIcon from '../assets/svg/home_profile_image.svg';
 
 const HomeHeaderProfile = () => {
+  const [userName, setUserName] = useState('');
+  const [loginId, setLoginId] = useState('');
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userInfoString = await AsyncStorage.getItem('@user:userInfo');
+        if (userInfoString !== null) {
+          const userInfo = JSON.parse(userInfoString);
+          setUserName(userInfo.userName);
+          setLoginId(userInfo.loginId);
+        }
+      } catch (error) {
+        console.error('[Home] AsyncStorage에서 userName을 가져오는데 실패했습니다: ', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
   return (
     <HeaderMinorContainer>
       <View style={{marginLeft: 20}}>
         <HomeProfileIcon width="26px" height="30px" fill={'#FFF'} />
       </View>
       <WelcomeContainer>
-        <WelcomeText>안녕하세요,</WelcomeText>
-        <WelcomeIdText>sampleid@cogem.com님</WelcomeIdText>
+        <WelcomeText>{userName}님, 안녕하세요!</WelcomeText>
+        <WelcomeIdText>{loginId}</WelcomeIdText>
       </WelcomeContainer>
     </HeaderMinorContainer>
   );

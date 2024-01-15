@@ -69,8 +69,8 @@ const SurveyClickButtons = ({selected, onSelect, disabled, width}) => {
             bottom: -10,
           },
         ]}>
-        <Text style={{color: '#8155FF'}}>{'전혀 아니다'}</Text>
-        <Text style={{color: '#00C0FC'}}>{'매우 그렇다'}</Text>
+        <Text style={{color: '#8155FF', opacity: 0.7}}>{'전혀 아니다'}</Text>
+        <Text style={{color: '#00C0FC', opacity: 0.7}}>{'매우 그렇다'}</Text>
       </Animated.View>
     </>
   );

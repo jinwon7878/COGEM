@@ -2,6 +2,27 @@ import React from 'react';
 import {View, Text} from 'react-native';
 import styled from '@emotion/native';
 
+const HomeHeaderTodayStatus = () => {
+  return (
+    <HeaderMinorContainer>
+      <TodayStatusContainer>
+        <TodayStatusText>새로 완료한 설문</TodayStatusText>
+        <TodayStatusText>1번째 리포트까지</TodayStatusText>
+      </TodayStatusContainer>
+      <TodayStatusContainer>
+        <TodayStatusEquals>·</TodayStatusEquals>
+        <TodayStatusEquals>·</TodayStatusEquals>
+      </TodayStatusContainer>
+      <TodayStatusResultContainer style={{marginRight: 18}}>
+        <TodayStatusResultText>10</TodayStatusResultText>
+        <TodayStatusResultText>190</TodayStatusResultText>
+      </TodayStatusResultContainer>
+    </HeaderMinorContainer>
+  );
+};
+
+export default HomeHeaderTodayStatus;
+
 const HeaderMinorContainer = styled.View`
   display: flex;
   flex-direction: row;
@@ -41,24 +62,3 @@ const TodayStatusResultText = styled.Text`
   font-weight: 400;
   padding: 1px;
 `;
-
-const HomeHeaderTodayStatus = () => {
-  return (
-    <HeaderMinorContainer>
-      <TodayStatusContainer>
-        <TodayStatusText>완료한 오늘의 설문</TodayStatusText>
-        <TodayStatusText>오늘의 미션</TodayStatusText>
-      </TodayStatusContainer>
-      <TodayStatusContainer>
-        <TodayStatusEquals>·</TodayStatusEquals>
-        <TodayStatusEquals>·</TodayStatusEquals>
-      </TodayStatusContainer>
-      <TodayStatusResultContainer style={{marginRight: 18}}>
-        <TodayStatusResultText>16일</TodayStatusResultText>
-        <TodayStatusResultText>완료</TodayStatusResultText>
-      </TodayStatusResultContainer>
-    </HeaderMinorContainer>
-  );
-};
-
-export default HomeHeaderTodayStatus;

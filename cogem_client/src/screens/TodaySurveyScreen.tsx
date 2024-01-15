@@ -9,6 +9,7 @@ import {
 } from '../utils/LastQuestionData';
 import surveyData from '../assets/surveyData.json';
 import {toKoreaISOString} from '../utils/KoreaTime';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../axiosInstance';
 
 // import axios from 'axios';
@@ -24,6 +25,7 @@ const getQuestionText = (questionId, surveyQuestions) => {
 const TodaySurveyScreen = () => {
   const [questionId, setQuestionId] = useState(null);
   const [currentOrder, setCurrentOrder] = useState(1);
+  const [requestCount, setRequestCount] = useState(1);
   const [showTime, setShowTime] = useState(null); // 문제 나타난 시간 (Date.now() -> ms 단위로 저장)
   const questionText = getQuestionText(questionId, surveyData);
 
@@ -52,6 +54,7 @@ const TodaySurveyScreen = () => {
           fetchedData.lastQuestionId || 1,
           todayDate,
           1,
+          fetchedData.requestCount || 1,
         ); // 최근 접속이 오늘이 아니면, 날짜 업데이트 + 현재 문제 1번째로 설정
         fetchedData = await getLastQuestionData();
       }
@@ -69,46 +72,88 @@ const TodaySurveyScreen = () => {
     initializeSurvey();
   }, [currentOrder]);
 
+  useEffect(() => {
+    // requestCount 상태가 변경될 때마다 실행
+    const saveRequestCount = async () => {
+      try {
+        // AsyncStorage에 저장
+        await AsyncStorage.setItem(
+          '@survey:requestCount',
+          requestCount.toString(),
+        );
+      } catch (error) {
+        console.error('requestCount 저장 중 오류 발생:', error);
+      }
+    };
+
+    saveRequestCount();
+  }, [requestCount]);
+
   const handleAnswer = async selectedAnswer => {
     if (!isButtonDisabled) {
       // setIsLoading(true);
       setSelectedButton(selectedAnswer); // 0~5 or 'skip_next/no'
       setIsButtonDisabled(true); // 버튼 비활성화
-      // 현재 질문 번호와 날짜: currentOrder, questionId
+
       const currentTime = Date.now(); // ms 단위 (reaction time 계산용)
       const today = toKoreaISOString(new Date()); // 'YYYY-MM-DD:mm:ss:sss+09:000 (한국 날짜 및 시간)
-      console.log('Today Click!! : ', today);
       const skip_no = selectedAnswer === 'skip_no';
       const skip_next = selectedAnswer === 'skip_next';
       const time_spend = currentTime - showTime; // ms 단위
-      console.log('user spend time for solving!! (ms) : ', time_spend);
+      const userInfoString = await AsyncStorage.getItem('@user:userInfo');
+      const user_id = await JSON.parse(userInfoString).userId;
+
+      const newAnswer = {
+        user_id: user_id,
+        question_id: questionId,
+        skip_next: skip_next,
+        skip_no: skip_no,
+        answer: skip_no || skip_next ? null : selectedAnswer,
+        time_ans: today,
+        time_spend: time_spend, // ms 단위
+      };
+
+      console.log('[ans] newAnswer: ', newAnswer);
+
       try {
-        // 답변 전송
-        await axiosInstance.post('http://localhost:8080/answer', {
-          question_id: questionId,
-          skip_next: skip_next,
-          skip_no: skip_no,
-          answer: skip_no || skip_next ? null : selectedAnswer,
-          time_ans: today,
-          time_spend: time_spend, // ms 단위
-          // user_id 추가 필요
-        });
-        console.log('[req] question_id: ', questionId);
-        console.log('[req] skip_next: ', skip_next);
-        console.log('[req] skip_no: ', skip_no);
-        console.log(
-          '[req] answer: ',
-          `${skip_no || skip_next ? null : selectedAnswer}`,
+        const existingAnswersJSON = await AsyncStorage.getItem(
+          '@survey:requestObject',
         );
-        console.log('[req] time_ans: ', today);
-        console.log('[req] time_spend: ', time_spend);
+        let existingAnswers = existingAnswersJSON
+          ? JSON.parse(existingAnswersJSON)
+          : [];
+        // requestCount가 TOTAL_QUESTIONS 만큼 채워지지 않았다면 AsyncStorage에 저장
+        if (requestCount < TOTAL_QUESTIONS) {
+          existingAnswers.push(newAnswer);
+          await AsyncStorage.setItem(
+            '@survey:requestObject',
+            JSON.stringify(existingAnswers),
+          );
+        } else {
+          existingAnswers.push(newAnswer);
+          // 저장된 답변들 server 전송
+          const response = await axiosInstance.post(
+            'http://localhost:8080/answer',
+            existingAnswers,
+          );
+
+          if (response.status === 200) {
+            console.log('[req] request success!!');
+            // AsyncStorage Request 관련 key-value 초기화
+            await AsyncStorage.removeItem('@survey:requestObject');
+            await AsyncStorage.removeItem('@survey:requestCount');
+            setRequestCount(0); // 0으로 설정하고, setTimeOut (1초 뒤)에서 1로 만들어줌
+          }
+        }
         // 답변 성공 후 다음 질문으로 이동하기 위한 상태 업데이트
         const nextQuestionId = questionId + 1; // 로직 수정 필요 (카테고리 골고루)
         const nextQuestionNumber = currentOrder + 1;
+        const nextRequestCount = requestCount + 1;
         await setLastQuestionData(
           nextQuestionId,
           today.slice(0, 10), // XXXX-XX-XX
           nextQuestionNumber,
+          nextRequestCount,
         ); // 다음 질문 ID로 업데이트
       } catch (error) {
         console.error(error);
@@ -117,6 +162,7 @@ const TodaySurveyScreen = () => {
         setSelectedButton(null); // 다음 문제를 위해 선택된 버튼 초기화
         setIsButtonDisabled(false); // 버튼 다시 활성화
         setCurrentOrder(currentOrder + 1); // useEffect 사용
+        setRequestCount(prev => prev + 1); // 비동기적으로 증가 + useEffect 트리거
       }, 1000);
       // setIsLoading(false);
     }
@@ -136,7 +182,9 @@ const TodaySurveyScreen = () => {
           <TotalQuestionsText>/{TOTAL_QUESTIONS}</TotalQuestionsText>
         )}
       </QuestionCounterContainer>
-      <QuestionContainer width={windowWidth * 0.85} height={windowHeight * 0.25}>
+      <QuestionContainer
+        width={windowWidth * 0.85}
+        height={windowHeight * 0.25}>
         <QuestionText>{questionText}</QuestionText>
       </QuestionContainer>
       <ButtonContainer marginBottom={windowHeight * 0.15}>

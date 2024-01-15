@@ -9,6 +9,7 @@ mock.onPost('http://localhost:8080/user/signup').reply(200);
 mock.onPost('http://localhost:8080/user/signin').reply(200, {
   userInfo: {
     userId: '12345',
+    loginId: 'mockLoginId',
     userGender: 'male',
     userName: '홍길동',
     userBirth: '1990-01-01',

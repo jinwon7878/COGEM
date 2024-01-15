@@ -24,13 +24,6 @@ const data2 = [
   {emotion: '놀람', value: 2},
 ];
 
-const ChartComponent = styled.View`
-  width: 330px;
-  height: 290px;
-  justify-content: center;
-  align-items: center;
-`;
-
 const HomeResultBarchart = () => {
   return (
     <ChartComponent>
@@ -124,3 +117,10 @@ const HomeResultBarchart = () => {
 };
 
 export default HomeResultBarchart;
+
+const ChartComponent = styled.View`
+  width: 330px;
+  height: 290px;
+  justify-content: center;
+  align-items: center;
+`;

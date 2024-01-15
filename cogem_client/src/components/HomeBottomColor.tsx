@@ -2,15 +2,35 @@ import React from 'react';
 
 import styled from '@emotion/native';
 
+const HomeBottomColor = ({today}) => {
+  return (
+    <AllColorContainer>
+      <ColorContainer>
+        <Circle color="rgba(255, 184, 0, 0.8)" />
+        <BottomText>{today.slice(3, 5).replace('0', '')}월 측정값</BottomText>
+      </ColorContainer>
+      <ColorContainer>
+        <Circle color="#201C44" />
+        <BottomText>평균값</BottomText>
+      </ColorContainer>
+    </AllColorContainer>
+  );
+};
+
+export default HomeBottomColor;
+
 const AllColorContainer = styled.View`
   justify-content: center;
+  flex-direction: row;
   align-items: flex-end;
   margin: 15px;
 `;
+
 const ColorContainer = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin: 10px;
 `;
 
 const BottomText = styled.Text`
@@ -27,20 +47,3 @@ const Circle = styled.View`
   border-radius: 4px;
   background-color: ${props => props.color || 'blue'};
 `;
-
-const HomeBottomColor = () => {
-  return (
-    <AllColorContainer>
-      <ColorContainer>
-        <Circle color="rgba(255, 184, 0, 0.8)" />
-        <BottomText>측정값</BottomText>
-      </ColorContainer>
-      <ColorContainer>
-        <Circle color="#201C44" />
-        <BottomText>평균값</BottomText>
-      </ColorContainer>
-    </AllColorContainer>
-  );
-};
-
-export default HomeBottomColor;

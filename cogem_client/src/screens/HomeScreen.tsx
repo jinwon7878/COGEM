@@ -35,8 +35,8 @@ const HomeScreen = () => {
             </ButtonText>
           </Button>
         </ButtonContainer>
-        {selectedButton === 'emotion' && <HomeResultBox />}
-        {selectedButton === 'cognition' && <CognitionComponent />}
+        <HomeResultBox type={selectedButton} />
+        {/* {selectedButton === 'cognition' && <CognitionComponent />} */}
       </ResultContainer>
     </View>
   );
