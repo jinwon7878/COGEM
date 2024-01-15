@@ -14,60 +14,6 @@ import axiosInstance from '../axiosInstance';
 // import axios from 'axios';
 // import CustomActivityIndicator from '../components/CustomActivityIndicator';
 
-const Container = styled.View`
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-`;
-
-const QuestionContainer = styled.View`
-  margin: 100px 0;
-  width: ${props => props.width}px;
-  flex-grow: 1;
-  justify-content: center;
-`;
-
-const QuestionText = styled.Text`
-  font-size: 15px;
-  font-weight: 400;
-  color: white;
-  text-align: center;
-`;
-
-const ButtonContainer = styled.View`
-  margin-bottom: ${props => props.marginBottom}px;
-`;
-
-const QuestionCounterContainer = styled.View`
-  flex-direction: row;
-  align-items: flex-end;
-  margin-bottom: ${props => props.marginBottom}px;
-`;
-
-const SkipContainer = styled.View`
-  height: 72px;
-  justify-content: space-between;
-  display: flex;
-  align-items: flex-end;
-  align-self: flex-end;
-  margin-right: ${props => props.marginRight}px;
-  margin-bottom: ${props => props.marginBottom}px;
-`;
-
-const CurrentOrderText = styled.Text`
-  font-size: 30px;
-  color: ${props => (props.isCompleted ? '#FAAE1B' : 'white')};
-  text-align: center;
-  margin-right: 5px;
-`;
-
-const TotalQuestionsText = styled.Text`
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin-bottom: 5px;
-`;
-
 const TOTAL_QUESTIONS = 12;
 
 const getQuestionText = (questionId, surveyQuestions) => {
@@ -116,7 +62,7 @@ const TodaySurveyScreen = () => {
         fetchedData,
       );
       setQuestionId(fetchedData.lastQuestionId);
-      setCurrentOrder(fetchedData.currentQuestion);
+      setCurrentOrder(fetchedData.currentSurveyOrder);
 
       // setIsLoading(false); // 로딩 완료
     };
@@ -222,3 +168,57 @@ const TodaySurveyScreen = () => {
   );
 };
 export default TodaySurveyScreen;
+
+const Container = styled.View`
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+
+const QuestionContainer = styled.View`
+  margin: 100px 0;
+  width: ${props => props.width}px;
+  flex-grow: 1;
+  justify-content: center;
+`;
+
+const QuestionText = styled.Text`
+  font-size: 15px;
+  font-weight: 400;
+  color: white;
+  text-align: center;
+`;
+
+const ButtonContainer = styled.View`
+  margin-bottom: ${props => props.marginBottom}px;
+`;
+
+const QuestionCounterContainer = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: ${props => props.marginBottom}px;
+`;
+
+const SkipContainer = styled.View`
+  height: 72px;
+  justify-content: space-between;
+  display: flex;
+  align-items: flex-end;
+  align-self: flex-end;
+  margin-right: ${props => props.marginRight}px;
+  margin-bottom: ${props => props.marginBottom}px;
+`;
+
+const CurrentOrderText = styled.Text`
+  font-size: 30px;
+  color: ${props => (props.isCompleted ? '#FAAE1B' : 'white')};
+  text-align: center;
+  margin-right: 5px;
+`;
+
+const TotalQuestionsText = styled.Text`
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-bottom: 5px;
+`;

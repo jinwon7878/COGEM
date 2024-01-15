@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import BottomTabNavigator from './BottomTabNavigator';
 import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 
 import MissionDetailScreen from '../screens/MissionDetailScreen';
 import TotalResultsScreen from '../screens/TotalResultsScreen';
@@ -15,9 +17,29 @@ import NbackScreen from '../tasks/Nback/NbackScreen';
 import NbackResult from '../tasks/Nback/NbackResult';
 
 export default function RootStackNavigator() {
-  const isSignedIn = true;
+  const [isSignedIn, setIsSignedIn] = useState(false);
   const Stack = createNativeStackNavigator();
   const initialRouteName = isSignedIn ? 'Main' : 'SignIn';
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const userInfoString = await AsyncStorage.getItem('@user:userInfo');
+        if (userInfoString !== null) {
+          // 사용자 정보가 있으면 로그인 상태로 설정
+          const userInfo = JSON.parse(userInfoString);
+          console.log('[autoLogin] userInfo = ', userInfo);
+          setIsSignedIn(true);
+        }
+      } catch (error) {
+        // 오류 처리
+        console.error('[autoLogin] AsyncStorage에서 userInfo를 가져오는데 실패했습니다: ', error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
   // 공용 screen options
   const screenOptions = {
     headerShown: false,
@@ -78,7 +100,18 @@ export default function RootStackNavigator() {
           <Stack.Screen name="NbackResult" component={NbackResult} />
         </>
       ) : (
-        <Stack.Screen name="SignIn" component={SignInScreen} />
+        <>
+          <Stack.Screen name="SignIn">
+            {props => <SignInScreen {...props} setIsSignedIn={setIsSignedIn} />}
+          </Stack.Screen>
+          <Stack.Screen
+            name="SignUp"
+            component={SignUpScreen}
+            options={{
+              headerShown: true,
+            }}
+          />
+        </>
       )}
     </Stack.Navigator>
   );

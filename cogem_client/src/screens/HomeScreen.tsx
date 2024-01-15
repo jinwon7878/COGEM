@@ -7,6 +7,43 @@ import HomeHeaderProfile from '../components/HomeHeaderProfile';
 import HomeHeaderTodayStatus from '../components/HomeHeaderTodayStatus';
 import HomeResultBox from '../components/HomeResultBox';
 
+// Main Function
+const HomeScreen = () => {
+  const [selectedButton, setSelectedButton] = useState('emotion');
+
+  const handlePress = button => {
+    setSelectedButton(button);
+  };
+  return (
+    <View>
+      <HeaderContainer>
+        <HomeHeaderProfile />
+        <HomeHeaderTodayStatus />
+      </HeaderContainer>
+      <ResultContainer>
+        <ButtonContainer>
+          <Button
+            active={selectedButton === 'emotion'}
+            onPress={() => handlePress('emotion')}>
+            <ButtonText active={selectedButton === 'emotion'}>감정</ButtonText>
+          </Button>
+          <Button
+            active={selectedButton === 'cognition'}
+            onPress={() => handlePress('cognition')}>
+            <ButtonText active={selectedButton === 'cognition'}>
+              인지
+            </ButtonText>
+          </Button>
+        </ButtonContainer>
+        {selectedButton === 'emotion' && <HomeResultBox />}
+        {selectedButton === 'cognition' && <CognitionComponent />}
+      </ResultContainer>
+    </View>
+  );
+};
+
+export default HomeScreen;
+
 // Header
 const HeaderContainer = styled.View`
   display: flex;
@@ -54,40 +91,3 @@ const CognitionComponent = styled.View`
   margin-top: 20px;
   border-radius: 20px;
 `;
-
-// Main Function
-const HomeScreen = () => {
-  const [selectedButton, setSelectedButton] = useState('emotion');
-
-  const handlePress = button => {
-    setSelectedButton(button);
-  };
-  return (
-    <View>
-      <HeaderContainer>
-        <HomeHeaderProfile />
-        <HomeHeaderTodayStatus />
-      </HeaderContainer>
-      <ResultContainer>
-        <ButtonContainer>
-          <Button
-            active={selectedButton === 'emotion'}
-            onPress={() => handlePress('emotion')}>
-            <ButtonText active={selectedButton === 'emotion'}>감정</ButtonText>
-          </Button>
-          <Button
-            active={selectedButton === 'cognition'}
-            onPress={() => handlePress('cognition')}>
-            <ButtonText active={selectedButton === 'cognition'}>
-              인지
-            </ButtonText>
-          </Button>
-        </ButtonContainer>
-        {selectedButton === 'emotion' && <HomeResultBox />}
-        {selectedButton === 'cognition' && <CognitionComponent />}
-      </ResultContainer>
-    </View>
-  );
-};
-
-export default HomeScreen;

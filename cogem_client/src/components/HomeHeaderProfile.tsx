@@ -4,6 +4,22 @@ import styled from '@emotion/native';
 
 import HomeProfileIcon from '../assets/svg/home_profile_image.svg';
 
+const HomeHeaderProfile = () => {
+  return (
+    <HeaderMinorContainer>
+      <View style={{marginLeft: 20}}>
+        <HomeProfileIcon width="26px" height="30px" fill={'#FFF'} />
+      </View>
+      <WelcomeContainer>
+        <WelcomeText>안녕하세요,</WelcomeText>
+        <WelcomeIdText>sampleid@cogem.com님</WelcomeIdText>
+      </WelcomeContainer>
+    </HeaderMinorContainer>
+  );
+};
+
+export default HomeHeaderProfile;
+
 const HeaderMinorContainer = styled.View`
   display: flex;
   flex-direction: row;
@@ -28,19 +44,3 @@ const WelcomeIdText = styled.Text`
   font-style: normal;
   font-weight: 400;
 `;
-
-const HomeHeaderProfile = () => {
-  return (
-    <HeaderMinorContainer>
-      <View style={{marginLeft: 20}}>
-        <HomeProfileIcon width="26px" height="30px" fill={'#FFF'} />
-      </View>
-      <WelcomeContainer>
-        <WelcomeText>안녕하세요,</WelcomeText>
-        <WelcomeIdText>sampleid@cogem.com님</WelcomeIdText>
-      </WelcomeContainer>
-    </HeaderMinorContainer>
-  );
-};
-
-export default HomeHeaderProfile;
