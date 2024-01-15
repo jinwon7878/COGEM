@@ -45,9 +45,8 @@ const TodaySurveyScreen = () => {
       const todayDate = todayTime.slice(0, 10); // 'YYYY-MM-DD'
       setShowTime(Date.now()); // ms 단위로 저장, reaction time 계산용
 
-      console.log('TodaySurvey Rendering! ', fetchedData);
-      console.log('todayTime(show) is ', todayTime);
-      console.log('todayDate(show) is ', todayDate);
+      console.log('[TodaySurvey] Rendering! ', fetchedData);
+      console.log('[TodaySurvey] todayTime(show) is ', todayTime);
       if (fetchedData.lastEnterDate !== todayDate) {
         await setLastQuestionData(
           fetchedData.lastQuestionId || 1,
@@ -58,7 +57,7 @@ const TodaySurveyScreen = () => {
       }
       // 최근 접속이 오늘이면 AsyncStorage 업데이트는 필요 X
       console.log(
-        'update lastQuestionData (AsyncStorage & State)! ',
+        '[TodaySurvey] update lastQuestionData (AsyncStorage): ',
         fetchedData,
       );
       setQuestionId(fetchedData.lastQuestionId);
@@ -129,18 +128,7 @@ const TodaySurveyScreen = () => {
 
   return (
     <Container>
-      <QuestionContainer width={windowWidth * 0.85}>
-        <QuestionText>{questionText}</QuestionText>
-      </QuestionContainer>
-      <ButtonContainer marginBottom={windowHeight * 0.1}>
-        <SurveyClickButtons
-          selected={selectedButton}
-          onSelect={handleAnswer}
-          disabled={isButtonDisabled}
-          width={windowWidth * 0.72}
-        />
-      </ButtonContainer>
-      <QuestionCounterContainer marginBottom={windowHeight * 0.08}>
+      <QuestionCounterContainer marginTop={windowHeight * 0.05}>
         <CurrentOrderText isCompleted={currentOrder > TOTAL_QUESTIONS}>
           {currentOrder}
         </CurrentOrderText>
@@ -148,6 +136,17 @@ const TodaySurveyScreen = () => {
           <TotalQuestionsText>/{TOTAL_QUESTIONS}</TotalQuestionsText>
         )}
       </QuestionCounterContainer>
+      <QuestionContainer width={windowWidth * 0.85} height={windowHeight * 0.25}>
+        <QuestionText>{questionText}</QuestionText>
+      </QuestionContainer>
+      <ButtonContainer marginBottom={windowHeight * 0.15}>
+        <SurveyClickButtons
+          selected={selectedButton}
+          onSelect={handleAnswer}
+          disabled={isButtonDisabled}
+          width={windowWidth * 0.7}
+        />
+      </ButtonContainer>
       <SkipContainer
         marginBottom={windowHeight * 0.15}
         marginRight={windowWidth * 0.05}>
@@ -175,11 +174,20 @@ const Container = styled.View`
   flex: 1;
 `;
 
+const QuestionCounterContainer = styled.View`
+  flex-direction: row;
+  align-items: flex-end;
+  margin-top: ${props => props.marginTop}px;
+  margin-bottom: ${props => props.marginBottom}px;
+`;
+
 const QuestionContainer = styled.View`
-  margin: 100px 0;
+  margin: 20px 0;
+  padding-top: 50px;
   width: ${props => props.width}px;
-  flex-grow: 1;
-  justify-content: center;
+  height: ${props => props.height}px;
+  justify-content: flex-start;
+  // background-color: skyblue;
 `;
 
 const QuestionText = styled.Text`
@@ -190,12 +198,6 @@ const QuestionText = styled.Text`
 `;
 
 const ButtonContainer = styled.View`
-  margin-bottom: ${props => props.marginBottom}px;
-`;
-
-const QuestionCounterContainer = styled.View`
-  flex-direction: row;
-  align-items: flex-end;
   margin-bottom: ${props => props.marginBottom}px;
 `;
 
